@@ -352,9 +352,33 @@ public:
       }
       else
       {
-
-
-
+          size_type dequeSize = compDequeSize();
+          myData.mapSize = 8;
+          while (count > dequeSize * (myData.mapSize - 1)) {
+              myData.mapSize *= 2;
+          }
+          myData.map = new pointer[myData.mapSize]();
+          //create 1-dimension dynamic array(pointer1 to pointer2)
+          for (size_t i = 0; count > myData.mySize; i++) {
+              myData.map[i] = new value_type[dequeSize]();
+              myData.mySize += dequeSize;
+          }
+          //create 2-dimension dynamic array(pointer2 to value type)
+          //fill array
+          myData.mySize = 0;
+          
+          for (size_t i = 0; i < myData.mapSize; i++) {
+              for (size_t j = 0; j < dequeSize; j++) {
+                  myData.map[i][j] = val;
+                  myData.mySize++;
+                  if (myData.mySize == count) {
+                      break;
+                  }
+              }
+              if (myData.mySize == count) {
+                  break;
+              }
+          }
       }
 
       myData.mySize = count;

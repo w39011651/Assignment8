@@ -3,7 +3,7 @@ using std::cout;
 using std::endl;
 
 #include <deque>
-#include "deque.h"
+#include "Student ID - deque - fill constructor.h"
 
 template< typename T >
 void testFillConstructor();
@@ -87,8 +87,8 @@ bool equal( std::deque< T > &deque1, deque< T > &deque2 )
    size_t dequeSize = compDequeSize< T >(); // elements per block (a power of 2)
 
    size_t row, col;
-//   for( size_t i = myOff1; i < myOff1 + mySize1; ++i )
-   for( size_t i = 0; i < dequeSize * mapSize1; ++i )
+   for( size_t i = myOff1; i < myOff1 + mySize1; ++i )
+//   for( size_t i = 0; i < dequeSize * mapSize1; ++i )
    {
       row = ( i / dequeSize ) % mapSize1;
       if( map1[ row ] != nullptr && map2[ row ] == nullptr )
