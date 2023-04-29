@@ -351,8 +351,40 @@ public:
          myData.mapSize = 8;
          while( myData.mySize > dequeSize * ( myData.mapSize - 1 ) )
             myData.mapSize *= 2;
-
-
+         size_type elementCounter = 0;
+         //create 1-dimension dynamic array
+         myData.map = new pointer[myData.mapSize]();
+         //create 2-dimension dynamic array
+         for (size_t i = 0; i < myData.mapSize; i++) {
+             myData.map[i] = new value_type[dequeSize]();
+             elementCounter += dequeSize;
+             if (elementCounter >= right.myData.mySize) {
+                 break;
+             }
+         }
+         elementCounter = 0;//initial
+         //copy the elements from right-hand-side object
+         size_t rightStart = right.myData.myOff / dequeSize, //example 56/4=14,57/4=14
+             rightSubStart = right.myData.myOff % dequeSize,//56%4=0, 57%4=1
+             leftIndex = 0, rightIndex = 0;
+         for (size_t i = 0; elementCounter!=myData.mySize; i++) {
+             for (size_t j = 0; j < dequeSize; j++) {
+                 rightIndex = (j + rightSubStart);
+                 if (rightIndex >= dequeSize) {
+                     leftIndex = (i + rightStart + 1) % right.myData.mapSize;
+                     rightIndex -=dequeSize;
+                 }
+                 else {
+                     leftIndex = (i + rightStart) % right.myData.mapSize;
+                 }
+                 myData.map[i][j] = right.myData.map[leftIndex][rightIndex];
+                 //before line problem : if j+rightSubStart>=4, then start need plus 1
+                 elementCounter++;
+                 if (elementCounter == myData.mySize) {
+                     break;
+                 }
+             }
+         }
 
       }
    }
