@@ -423,8 +423,14 @@ public:
             if( myData.myOff % dequeSize == 0 &&
                myData.mapSize <= ( myData.mySize + dequeSize ) / dequeSize )
                doubleMapSize();
+            //最前面的pointer array new 一個新的value_type array(if full)
+            //if not full, move forward
+            //判斷begin()前一格是不是nullptr
+            if ((begin()) == nullptr) {
 
-
+            }
+            
+            
 
          }
          else  // all elements after (and at) where move backward
@@ -475,8 +481,23 @@ private:
          size_type oldMapSize = myData.mapSize;
          myData.mapSize *= 2;
          value_type **newMap = new value_type * [ myData.mapSize ]();
-
-
+         int Offset = myData.myOff;
+         size_t dequeSize = compDequeSize();
+         for (size_t i = 0; i < myData.mapSize; i++) {
+             newMap[i] = new value_type[dequeSize]();
+         }
+         //調整:myOff要一樣
+         size_t elementCounter = 0;
+         for (size_t i = (Offset/dequeSize); elementCounter < myData.mapSize; i++) {
+             for (size_t j = (Offset%dequeSize); j < dequeSize; j++) {
+                 newMap[i][j] = myData.map[i][j];
+                 Offset--;
+                 elementCounter++;
+                 if (elementCounter == myData.mySize) {
+                     break;
+                 }
+             }
+         }
 
          delete[] myData.map;
 

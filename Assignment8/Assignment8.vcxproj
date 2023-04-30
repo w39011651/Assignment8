@@ -19,10 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Student ID - deque - copy constructor.h" />
+    <ClInclude Include="Student ID - deque - insert.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Test Copy Constructor.cpp" />
+    <ClCompile Include="Test Insert 1.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
