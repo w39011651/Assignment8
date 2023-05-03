@@ -411,7 +411,25 @@ public:
             myData.map = new value_type * [ 8 ]();
             myData.mapSize = 8;
          }
+         size_t row = (off / dequeSize) % myData.mapSize;
+         size_t col = off % dequeSize;
+         //find forward
+         if (row == 0 && col == 0) {
+             row = myData.mapSize - 1;
+             col = dequeSize - 1;
+         }
+         else if (col == 0) {
+             col = dequeSize - 1;
+             row--;
+         }
+         else
+             col -= 1;
 
+         if (myData.map[row] == nullptr) {
+             myData.map[row] = new value_type[dequeSize]();
+         }
+         myData.map[row][col] = val;
+         myData.myOff = row * dequeSize + col;
 
 
       }
@@ -423,7 +441,66 @@ public:
             if( myData.myOff % dequeSize == 0 &&
                myData.mapSize <= ( myData.mySize + dequeSize ) / dequeSize )
                doubleMapSize();
+            if (myData.myOff >= myData.mapSize * dequeSize) {
+                myData.myOff %= myData.mapSize * dequeSize;
+            }
 
+            //begin,row:i/dequeSize%mapSize, col=i%dequeSize
+            size_t row = (myData.myOff / dequeSize) % myData.mapSize; //begin
+            int targetRow = ((myData.myOff + off - 1) / dequeSize) % myData.mapSize;
+            size_t col = myData.myOff % dequeSize;
+            int targetCol = (myData.myOff + off - 1) % dequeSize;
+            //check that is index out of range?
+            if (targetRow < 0)
+                targetRow += myData.mapSize;
+            if (targetCol < 0)
+                targetCol += dequeSize;
+            //fix the negative index, following:find the forward index of begin
+            if (row == 0 && col == 0) {
+                if (myData.map[row + myData.mapSize - 1] == nullptr) {
+                    myData.map[row + myData.mapSize - 1] = new value_type[dequeSize]();
+                    row += myData.mapSize - 1;
+                    col += dequeSize - 1;
+                }
+            }//map[0][0]
+            else if (col == 0) {
+                if (myData.map[row - 1] == nullptr) {
+                    myData.map[row - 1] = new value_type[dequeSize]();
+                    row--;
+                    col += dequeSize - 1;
+                }
+            }//map[n][0]
+            else {
+                col--;
+            }
+            //following: move forward
+            for (size_t i = 0; i < off; i++) {
+                row = ((i + myData.myOff - 1) / dequeSize) % myData.mapSize;
+                col = (i + myData.myOff - 1) % dequeSize;
+                size_t nextRow, nextCol;
+
+                if (row == myData.mapSize - 1 && col == dequeSize - 1) {
+                    nextRow = 0;
+                    nextCol = 0;
+                }//change to first element;
+                else if (col == dequeSize - 1) {
+                    nextRow = row + 1;
+                    nextCol = 0;
+                }//change to next row
+                else {
+                    nextRow = row;
+                    nextCol = col + 1;
+                }//increase
+
+                myData.map[row][col] = myData.map[nextRow][nextCol];
+            }
+
+            myData.map[targetRow][targetCol] = val;
+
+            if (myData.myOff == 0)
+                myData.myOff = myData.mapSize * dequeSize - 1;//是begin()-end()?
+            else
+                myData.myOff -= 1;
 
 
          }
@@ -432,7 +509,43 @@ public:
             if( ( myData.myOff + myData.mySize ) % dequeSize == 0 &&
                myData.mapSize <= ( myData.mySize + dequeSize ) / dequeSize )
                doubleMapSize();
+            if ((myData.myOff + myData.mySize) % dequeSize == 0 &&
+                myData.mapSize <= (myData.mySize + dequeSize) / dequeSize)
+                doubleMapSize();
 
+            if (myData.myOff >= myData.mapSize * dequeSize) {
+                myData.myOff %= myData.mapSize * dequeSize;
+            }
+
+
+            size_t row = ((myData.myOff + myData.mySize - 1) / dequeSize) % myData.mapSize;
+            size_t col = (myData.myOff + myData.mySize - 1) % dequeSize;//find last index
+            size_t nextRow = 0, nextCol = 0;
+            size_t targetRow = ((myData.myOff + off) / dequeSize) % myData.mapSize;
+            size_t targetCol = (myData.myOff + off) % dequeSize;
+            if (row == myData.mapSize - 1 && col == dequeSize - 1) {
+                nextRow = 0;
+                nextCol = 0;
+            }
+            else if (col == dequeSize - 1) {
+                nextRow = row + 1;
+                nextCol = 0;
+            }
+            else {
+                nextRow = row;
+                nextCol = col + 1;//find the next of the last
+            }
+            if (myData.map[nextRow] == nullptr) {
+                myData.map[nextRow] = new value_type[dequeSize]();
+            }
+            for (size_t i = 0; i < myData.mySize - off; i++) {
+                row = ((myData.myOff + myData.mySize - i - 1) / dequeSize) % myData.mapSize;
+                col = (myData.myOff + myData.mySize - i - 1) % dequeSize;
+                myData.map[nextRow][nextCol] = myData.map[row][col];
+                nextRow = row;
+                nextCol = col;
+            }
+            myData.map[targetRow][targetCol] = val;
 
 
          }
@@ -476,7 +589,18 @@ private:
          myData.mapSize *= 2;
          value_type **newMap = new value_type * [ myData.mapSize ]();
 
-
+         size_t dequeSize = compDequeSize();
+         for (size_t i = myData.myOff; i < myData.mySize + myData.myOff; i++) {
+             size_t createRow = (i / dequeSize) % myData.mapSize;
+             newMap[createRow] = new value_type[dequeSize]();
+         }
+         //調整:myOff要一樣
+         for (int i = myData.myOff; i < myData.myOff + myData.mySize; i++) {
+             int leftrow = (i / dequeSize) % oldMapSize;
+             int rightrow = (i / dequeSize) % myData.mapSize;
+             int col = i % dequeSize;
+             newMap[rightrow][col] = myData.map[leftrow][col];
+         }
 
          delete[] myData.map;
 

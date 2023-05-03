@@ -540,17 +540,6 @@ public:
                 myData.map[nextRow][nextCol] = myData.map[row][col];
                 nextRow = row;
                 nextCol = col;
-                /*if (row == 0 && col == 0) {
-                    row = myData.mapSize - 1;
-                    col = dequeSize - 1;
-                }
-                else if (col == 0) {
-                    row -= 1;
-                    col = dequeSize - 1;
-                }
-                else {
-                    col -= 1;
-                }*/
             }
             myData.map[targetRow][targetCol] = val;
          }

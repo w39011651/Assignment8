@@ -19,10 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Student ID - deque - insert.h" />
+    <ClInclude Include="Student ID - deque - insert2.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Test Insert 1.cpp" />
+    <ClCompile Include="Test Insert 2.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
