@@ -3,7 +3,7 @@ using std::cout;
 using std::endl;
 
 #include <deque>
-#include "deque.h"
+#include "Student ID - deque - erase2.h"
 
 template< typename T >
 size_t compDequeSize();

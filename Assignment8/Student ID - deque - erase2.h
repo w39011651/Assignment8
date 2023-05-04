@@ -409,15 +409,78 @@ public:
       {
          iterator whereIt = makeIter( where );
          size_type off = static_cast< size_type >( where - begin() );
+
+         size_t dequeSize = compDequeSize();
          if( off < myData.mySize / 2 ) // closer to front
          {
-
+             size_t row = ((myData.myOff + off) / dequeSize) % myData.mapSize;
+             size_t col = ((myData.myOff + off) % dequeSize);
+             size_t nextRow = 0, nextCol = 0;
+             if (row == 0 && col == 0) {
+                 nextRow = myData.mapSize - 1;
+                 nextCol = dequeSize - 1;
+             }
+             else if (col == 0) {
+                 nextRow = row - 1;
+                 nextCol = dequeSize - 1;
+             }
+             else {
+                 nextRow = row;
+                 nextCol = col - 1;
+             }
+             for (size_t i = 0; i < off; i++) {
+                 myData.map[row][col] = myData.map[nextRow][nextCol];
+                 row = nextRow;
+                 col = nextCol;
+                 if (row == 0 && col == 0) {
+                     nextRow = myData.mapSize - 1;
+                     nextCol = dequeSize - 1;
+                 }
+                 else if (col == 0) {
+                     nextRow = row - 1;
+                     nextCol = dequeSize - 1;
+                 }
+                 else {
+                     nextCol = col - 1;
+                 }
+             }
+             myData.myOff++;
 
 
          }
          else // closer to back
          {
-
+             size_t row = ((myData.myOff + off) / dequeSize) % myData.mapSize;
+             size_t col = ((myData.myOff + off) % dequeSize);
+             size_t nextRow = 0, nextCol = 0;
+             if (row == myData.mapSize - 1 && col == dequeSize - 1) {
+                 nextRow = 0;
+                 nextCol = 0;
+             }
+             else if (col == dequeSize - 1) {
+                 nextRow = row + 1;
+                 nextCol = 0;
+             }
+             else {
+                 nextRow = row;
+                 nextCol = col + 1;
+             }
+             for (size_t i = 0; i < myData.mySize - off - 1; i++) {
+                 myData.map[row][col] = myData.map[nextRow][nextCol];
+                 row = nextRow;
+                 col = nextCol;
+                 if (row == myData.mapSize - 1 && col == dequeSize - 1) {
+                     nextRow = 0;
+                     nextCol = 0;
+                 }
+                 else if (col == dequeSize - 1) {
+                     nextRow = row + 1;
+                     nextCol = 0;
+                 }
+                 else {
+                     nextCol = col + 1;
+                 }
+             }
 
 
          }

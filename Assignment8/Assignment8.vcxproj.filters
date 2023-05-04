@@ -15,12 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Student ID - deque - erase.h">
+    <ClInclude Include="Student ID - deque - erase2.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Test Erase 1.cpp">
+    <ClCompile Include="Test Erase 2.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>

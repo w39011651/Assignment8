@@ -19,10 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Test Erase 1.cpp" />
+    <ClInclude Include="Student ID - deque - erase2.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Student ID - deque - erase.h" />
+    <ClCompile Include="Test Erase 2.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
