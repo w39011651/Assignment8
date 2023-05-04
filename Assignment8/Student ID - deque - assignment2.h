@@ -367,6 +367,17 @@ public:
             if( newMapSize > myData.mapSize )
                enlargeMap( newMapSize ); // reuse the original memory space in the current object
 
+            size_t LeftRow = 0, LeftCol = 0, RightRow = 0, RightCol = 0;
+            for (size_t i = 0; i < right.myData.mySize; i++) {
+                LeftRow = (myData.myOff + i) / dequeSize % myData.mapSize;
+                LeftCol = (myData.myOff + i) % dequeSize;
+                RightRow = (right.myData.myOff + i) / dequeSize % right.myData.mapSize;
+                RightCol = (right.myData.myOff + i) % dequeSize;
+                if (myData.map[LeftRow] == nullptr) {
+                    myData.map[LeftRow] = new value_type[dequeSize]();
+                }
+                myData.map[LeftRow][LeftCol] = right.myData.map[RightRow][RightCol];
+            }
 
 
          }
@@ -377,7 +388,18 @@ public:
              myData.myOff = 0;
          else
          {  // copy data from right to the current object
-
+             size_t LeftRow = 0, LeftCol = 0, RightRow = 0, RightCol = 0;
+             for (size_t i = 0; i < right.myData.mySize; i++) {
+                 LeftRow = (myData.myOff + i) / dequeSize % myData.mapSize;
+                 LeftCol = (myData.myOff + i) % dequeSize;
+                 RightRow = (right.myData.myOff + i) / dequeSize % right.myData.mapSize;
+                 RightCol = (right.myData.myOff + i) % dequeSize;
+                 if (myData.map[LeftRow] == nullptr) {
+                     myData.map[LeftRow] = new value_type[dequeSize]();
+                 }
+                 myData.map[LeftRow][LeftCol] = right.myData.map[RightRow][RightCol];
+             }
+             myData.mySize = right.myData.mySize;
 
 
          }
@@ -454,9 +476,15 @@ private:
       myData.mapSize = newMapSize;
       value_type **newMap = new value_type * [ myData.mapSize ]();
 
+      size_t dequeSize = compDequeSize();
       if( myData.mySize > 0 )
       {
-
+          size_t row = (myData.myOff) / dequeSize % myData.mapSize;
+          for (size_t i = 0; i < oldMapSize; i++) {
+              newMap[row] = myData.map[i];
+              row++;
+              row %= myData.mapSize;
+          }
 
 
          delete[] myData.map;
